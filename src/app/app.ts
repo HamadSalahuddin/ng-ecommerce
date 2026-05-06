@@ -6,8 +6,8 @@ import { Header } from "./layout/header/header";
   selector: 'app-root',
   imports: [RouterOutlet, Header],
   template: `
-    <app-header />
-    <div class="h-[calc(100%-64px)] overflow-auto">
+    <app-header class="z-10" />
+    <div class="min-h-[calc(100%-64px)] overflow-auto">
       <router-outlet />
     </div>
   `,

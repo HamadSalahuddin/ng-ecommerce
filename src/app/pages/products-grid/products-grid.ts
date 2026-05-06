@@ -1,22 +1,16 @@
 import { Component, computed, input, signal } from '@angular/core';
 import { Product } from '../../models/product';
 import { TitleCasePipe } from '@angular/common';
+import { ProductCard } from "../../components/product-card/product-card";
 
 @Component({
   selector: 'app-product-grid',
-  imports: [TitleCasePipe],
+  imports: [TitleCasePipe, ProductCard],
   template: ` <div class="bg-gray-100 p-6 mb-6 h-full">
     <h1 class="text-2xl font-bold mb-4">{{ category() | titlecase }}</h1>
     <div class="responsive-grid">
     @for (product of filteredProducts(); track product.id) {
-      <div class="bg-white cursor-pointer rounded-xl shadow-lg overflow-hidden flex flex-col h-full">
-        <img [src]="product.imageUrl" class="w-full h-75 object-cover rounded-t-xl"/>
-        <div class="p-5 flex flex-col flex-1">
-          <h1 class="text-lg font-semibold text-gray-900 mb-2 leading-tight">
-            {{ product.name }}
-          </h1>
-        </div>
-      </div>
+      <app-product-card [product]="product" (addToCartClicked)="addToCart($event)" />
     }
   </div>
   </div>
@@ -37,7 +31,7 @@ export class ProductsGrid {
     rating: 4.5,
     reviewCount: 128,
     inStock: true,
-    category: 'electronic',
+    category: 'electronics',
   },
   {
     id: '2',
@@ -48,7 +42,7 @@ export class ProductsGrid {
     rating: 4.7,
     reviewCount: 94,
     inStock: true,
-    category: 'electronic',
+    category: 'electronics',
   },
   {
     id: '3',
@@ -59,7 +53,7 @@ export class ProductsGrid {
     rating: 4.6,
     reviewCount: 76,
     inStock: true,
-    category: 'electronic',
+    category: 'electronics',
   },
   {
     id: '4',
@@ -169,7 +163,7 @@ export class ProductsGrid {
     rating: 4.5,
     reviewCount: 82,
     inStock: true,
-    category: 'electronic',
+    category: 'electronics',
   },
   {
     id: '14',
@@ -180,7 +174,7 @@ export class ProductsGrid {
     rating: 4.6,
     reviewCount: 73,
     inStock: true,
-    category: 'electronic',
+    category: 'electronics',
   },
   {
     id: '15',
@@ -192,7 +186,7 @@ export class ProductsGrid {
     rating: 4.5,
     reviewCount: 69,
     inStock: true,
-    category: 'electronic',
+    category: 'electronics',
   },
   {
     id: '16',
@@ -250,7 +244,7 @@ export class ProductsGrid {
     rating: 4.5,
     reviewCount: 91,
     inStock: true,
-    category: 'electronic',
+    category: 'electronics',
   },
   ]);
 
@@ -264,5 +258,7 @@ export class ProductsGrid {
     return this.products().filter(product => product.category === category);
   })
 
-
+  addToCart(product: Product) {
+    console.log('Adding to cart:', product);
+  }
 }
