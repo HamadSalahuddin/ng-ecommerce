@@ -17,7 +17,7 @@ import { RouterLink } from '@angular/router';
       <button matButton>Sign In</button>
       <button matButton="filled">Sign Up</button>
     </div>
-   `,
+  `,
   styles: ``,
 })
-export class HeaderActions { }
+export class HeaderActions {}
