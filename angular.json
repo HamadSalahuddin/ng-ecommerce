@@ -52,7 +52,12 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/material-theme.scss", "src/styles.css"]
+            "styles": [
+              "src/material-theme.scss",
+              "src/styles.css",
+              "@ngxpert/hot-toast/styles.css",
+              "@ngxpert/hot-toast/themes/material.css"
+            ]
           },
           "configurations": {
             "production": {
