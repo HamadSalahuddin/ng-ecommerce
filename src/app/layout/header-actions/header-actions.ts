@@ -4,10 +4,22 @@ import { MatBadge } from '@angular/material/badge';
 import { MatIcon } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { EcommerceStore } from '../../ecommerce-store';
+import { MatDivider } from '@angular/material/divider';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-header-actions',
-  imports: [MatButton, MatIconButton, MatIcon, RouterLink, MatBadge],
+  imports: [
+    MatButton,
+    MatIconButton,
+    MatIcon,
+    RouterLink,
+    MatBadge,
+    MatDivider,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
+  ],
   template: `
     <div class="flex items-center gap-2">
       <button
@@ -26,8 +38,26 @@ import { EcommerceStore } from '../../ecommerce-store';
       >
         <mat-icon>shopping_cart</mat-icon>
       </button>
-      <button matButton>Sign In</button>
-      <button matButton="filled">Sign Up</button>
+      @if (store.user(); as user) {
+        <button matIconButton [matMenuTriggerFor]="userMenu">
+          <img [src]="user.imageUrl" [alt]="user.name" class="w-8 h-8 rounded-full" />
+        </button>
+
+        <mat-menu #userMenu="matMenu" xPosition="before">
+          <div class="flex flex-col px-3 min-w-50">
+            <span class="text-sm font-medium">{{ user.name }}</span>
+            <span class="text-xs text-gray-500">{{ user.email }}</span>
+          </div>
+          <mat-divider></mat-divider>
+          <button class="min-h-8!" mat-menu-item (click)="store.signOut()">
+            <mat-icon>logout</mat-icon>
+            Sign Out
+          </button>
+        </mat-menu>
+      } @else {
+        <button matButton>Sign In</button>
+        <button matButton="filled">Sign Up</button>
+      }
     </div>
   `,
   styles: ``,
