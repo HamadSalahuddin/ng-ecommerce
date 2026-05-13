@@ -52,7 +52,7 @@ import { ToggleWishlistButton } from '../../components/toggle-wishlist-button/to
         </p>
         <div class="responsive-grid">
           @for (product of store.filteredProducts(); track product.id) {
-            <app-product-card [product]="product" (addToCartClicked)="addToCart($event)">
+            <app-product-card [product]="product">
               <app-toggle-wishlist-button
                 [product]="product"
                 class="absolute! z-10 top-3 right-3"
@@ -74,9 +74,5 @@ export class ProductsGrid {
 
   constructor() {
     this.store.setCategory(this.category);
-  }
-
-  addToCart(product: Product) {
-    console.log('Adding to cart:', product);
   }
 }
