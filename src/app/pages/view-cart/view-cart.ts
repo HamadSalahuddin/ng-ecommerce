@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { BackButton } from '../../components/back-button/back-button';
 import { ListCartItems } from './list-cart-items/list-cart-items';
 import { TeaseWishlist } from './tease-wishlist/tease-wishlist/tease-wishlist';
+import { SummarizeOrder } from '../../components/summarize-order/summarize-order';
 
 @Component({
   selector: 'app-view-cart',
-  imports: [TeaseWishlist, BackButton, ListCartItems],
+  imports: [TeaseWishlist, BackButton, ListCartItems, SummarizeOrder],
   template: `
     <div class="mx-auto max-w-300 py-6">
       <app-back-button class="mb-6" navigateTo="/products/all"> Continue Shopping </app-back-button>
@@ -16,6 +17,9 @@ import { TeaseWishlist } from './tease-wishlist/tease-wishlist/tease-wishlist';
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2">
           <app-list-cart-items />
+        </div>
+        <div>
+          <app-summarize-order />
         </div>
       </div>
     </div>
