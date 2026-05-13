@@ -6,6 +6,7 @@ import { MatSidenavContainer, MatSidenavContent, MatSidenav } from '@angular/mat
 import { MatNavList, MatListItem } from '@angular/material/list';
 import { RouterLink } from '@angular/router';
 import { EcommerceStore } from '../../ecommerce-store';
+import { ToggleWishlistButton } from '../../components/toggle-wishlist-button/toggle-wishlist-button';
 
 @Component({
   selector: 'app-product-grid',
@@ -18,6 +19,7 @@ import { EcommerceStore } from '../../ecommerce-store';
     MatNavList,
     MatListItem,
     RouterLink,
+    ToggleWishlistButton,
   ],
   template: `
     <mat-sidenav-container>
@@ -50,7 +52,12 @@ import { EcommerceStore } from '../../ecommerce-store';
         </p>
         <div class="responsive-grid">
           @for (product of store.filteredProducts(); track product.id) {
-            <app-product-card [product]="product" (addToCartClicked)="addToCart($event)" />
+            <app-product-card [product]="product" (addToCartClicked)="addToCart($event)">
+              <app-toggle-wishlist-button
+                [product]="product"
+                class="absolute! z-10 top-3 right-3"
+              />
+            </app-product-card>
           }
         </div>
       </mat-sidenav-content>

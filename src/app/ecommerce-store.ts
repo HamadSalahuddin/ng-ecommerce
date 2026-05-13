@@ -287,5 +287,9 @@ export const EcommerceStore = signalStore(
       });
       toast.success('Product removed from wishlist');
     },
+
+    clearWishlist: () => {
+      patchState(store, { wishlistItems: [] });
+    },
   })),
 );
