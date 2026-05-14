@@ -6,6 +6,9 @@ import { RouterLink } from '@angular/router';
 import { EcommerceStore } from '../../ecommerce-store';
 import { MatDivider } from '@angular/material/divider';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { SignInDialog } from '../../components/sign-in-dialog/sign-in-dialog';
+import { SignUpDialog } from '../../components/sign-up-dialog/sign-up-dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-header-actions',
@@ -55,8 +58,8 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
           </button>
         </mat-menu>
       } @else {
-        <button matButton>Sign In</button>
-        <button matButton="filled">Sign Up</button>
+        <button matButton (click)="openSignInDialog()">Sign In</button>
+        <button matButton="filled" (click)="openSignUpDialog()">Sign Up</button>
       }
     </div>
   `,
@@ -64,4 +67,19 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 })
 export class HeaderActions {
   store = inject(EcommerceStore);
+
+  matDialog = inject(MatDialog);
+  openSignInDialog() {
+    this.matDialog.open(SignInDialog, {
+      disableClose: true,
+      data: { checkout: false },
+    });
+  }
+
+  openSignUpDialog() {
+    this.matDialog.open(SignUpDialog, {
+      disableClose: true,
+      data: { checkout: false },
+    });
+  }
 }

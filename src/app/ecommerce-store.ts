@@ -16,7 +16,8 @@ import { produce } from 'immer';
 import { Toastr } from './services/toastr';
 import { CartItem } from './models/cart';
 import { SignInDialog } from './components/sign-in-dialog/sign-in-dialog';
-import { SignInParams, User } from './models/user';
+import { SignInParams, SignUpParams, User } from './models/user';
+import { Order } from './models/order';
 
 export type EcommerceStore = {
   products: Product[];
@@ -24,6 +25,7 @@ export type EcommerceStore = {
   wishlistItems: Product[];
   cartItems: CartItem[];
   user: User | undefined;
+  loading: boolean;
 };
 
 export const EcommerceStore = signalStore(
@@ -262,6 +264,7 @@ export const EcommerceStore = signalStore(
     wishlistItems: [],
     cartItems: [],
     user: undefined,
+    loading: false,
   } as EcommerceStore),
 
   withComputed(({ category, products, wishlistItems, cartItems }) => ({
@@ -277,7 +280,7 @@ export const EcommerceStore = signalStore(
   })),
 
   withMethods(
-    (store, toast = inject(Toastr), matDialog = inject(MatDialog), router = inject(Router)) => ({
+    (store, toaster = inject(Toastr), matDialog = inject(MatDialog), router = inject(Router)) => ({
       setCategory: signalMethod<string>((category: string) => {
         patchState(store, { category });
       }),
@@ -290,14 +293,14 @@ export const EcommerceStore = signalStore(
         });
 
         patchState(store, { wishlistItems: updatedWishlistItems });
-        toast.success('Product added to wishlist!');
+        toaster.success('Product added to wishlist!');
       },
 
       removeFromWishList: (product: Product) => {
         patchState(store, {
           wishlistItems: store.wishlistItems().filter((p) => p.id !== product.id),
         });
-        toast.success('Product removed from wishlist');
+        toaster.success('Product removed from wishlist');
       },
 
       clearWishlist: () => {
@@ -318,7 +321,7 @@ export const EcommerceStore = signalStore(
         });
 
         patchState(store, { cartItems: updatedCartItems });
-        toast.success(
+        toaster.success(
           existingCartItemIndex !== -1 ? 'Product added again' : 'Product added to the cart',
         );
       },
@@ -362,12 +365,43 @@ export const EcommerceStore = signalStore(
       },
 
       proceedToCheckout: () => {
-        matDialog.open(SignInDialog, {
-          disableClose: true,
-          data: {
-            checkout: true,
-          },
-        });
+        if (!store.user()) {
+          matDialog.open(SignInDialog, {
+            disableClose: true,
+            data: {
+              checkout: true,
+            },
+          });
+          return;
+        }
+        router.navigate(['/checkout']);
+      },
+
+      placeOrder: async () => {
+        patchState(store, { loading: true });
+
+        const user = store.user();
+
+        if (!user) {
+          toaster.error('Please login before placing order');
+          patchState(store, { loading: false });
+          return;
+        }
+
+        const order: Order = {
+          id: crypto.randomUUID(),
+          userId: user.id,
+          total: Math.round(
+            store.cartItems().reduce((acc, item) => acc + item.quantity * item.product.price, 0),
+          ),
+          items: store.cartItems(),
+          paymentStatus: 'success',
+        };
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        patchState(store, { loading: false, cartItems: [] });
+        router.navigate(['order-success']);
       },
 
       signIn: ({ email, password, checkout, dialogId }: SignInParams) => {
@@ -387,7 +421,26 @@ export const EcommerceStore = signalStore(
         }
       },
 
-      signOut: () => {},
+      signUp: ({ email, password, name, checkout, dialogId }: SignUpParams) => {
+        patchState(store, {
+          user: {
+            id: '1',
+            email,
+            name: 'John Doe',
+            imageUrl: 'https://randomuser.me/api/portraits/men/1.jpg',
+          },
+        });
+
+        matDialog.getDialogById(dialogId)?.close();
+
+        if (checkout) {
+          router.navigate(['/checkout']);
+        }
+      },
+
+      signOut: () => {
+        patchState(store, { user: undefined });
+      },
     }),
   ),
 );
